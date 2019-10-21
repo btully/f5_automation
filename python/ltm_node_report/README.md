@@ -8,7 +8,7 @@ EXAMPLE OUTPUT:
 Searching for pools and virtual servers that reference node IP - 10.1.20.1
 ==============================================================================
     
-Pool: /Common/exmaple_pool
+Pool: /Common/example_pool
      -> Virtual: /Common/vs_1
      -> Virtual: /Common/vs_2
 ```

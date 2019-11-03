@@ -12,10 +12,13 @@ HEADERS = { 'Content-Type': 'application/json' }
 def get_all_pool_with_members(host, creds):
     # Get all pools 
     pool_url = 'https://%s/mgmt/tm/ltm/pool' % (host)
-    result = requests.get(pool_url, auth=creds, headers=HEADERS, verify=False).json()["items"]
+    result = requests.get(pool_url, auth=creds, headers=HEADERS, verify=False).json()
+    if not "items" in result.keys():
+        return []
+    pool_items = result["items"]
 
     pool_list = []
-    for pool in result:
+    for pool in pool_items:
         # Get members subcollection per pool
         pool_string = str(pool['fullPath']).replace('/', '~')
         pool_mem_url = 'https://%s/mgmt/tm/ltm/pool/%s/members' % (host, pool_string)
@@ -25,7 +28,12 @@ def get_all_pool_with_members(host, creds):
 
 def get_all_virtuals(host, creds):
     vs_url = 'https://%s/mgmt/tm/ltm/virtual' % (host)
-    return requests.get(vs_url, auth=creds, headers=HEADERS, verify=False).json()["items"]
+    result = requests.get(vs_url, auth=creds, headers=HEADERS, verify=False).json()
+    if "items" in result.keys():
+        return result["items"]
+    return []
+
+    #return requests.get(vs_url, auth=creds, headers=HEADERS, verify=False).json()["items"]
 
 
 if __name__ == "__main__":
@@ -37,7 +45,8 @@ if __name__ == "__main__":
     hostname = args['host']
 
     print("User: %s, enter your password: " % args['username'])
-    password = getpass.getpass()
+    #password = getpass.getpass()
+    password = "admin"
     creds = (args['username'], password)
     node_ip = args['node_ip']
 

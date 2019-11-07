@@ -45,8 +45,8 @@ if __name__ == "__main__":
     hostname = args['host']
 
     print("User: %s, enter your password: " % args['username'])
-    #password = getpass.getpass()
-    password = "admin"
+    password = getpass.getpass()
+    #password = "admin"
     creds = (args['username'], password)
     node_ip = args['node_ip']
 

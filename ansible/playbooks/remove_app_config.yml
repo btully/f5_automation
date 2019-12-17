@@ -1,0 +1,76 @@
+---
+- name: Remove Big-IP Application Config
+  hosts: bigips
+  connection: local
+  gather_facts: false
+
+  vars:
+    partition: Common
+    vs: demo_vs
+    bigip_user: admin
+    bigip_pass: admin
+
+  environment: "{{ bigip_env }}"
+
+  tasks:
+    - name: Authenticate to BIG-IP
+      uri:
+        url: "https://{{ inventory_hostname }}/mgmt/shared/authn/login"
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          username: "{{ bigip_user }}"
+          password: "{{ bigip_pass }}"
+          loginProviderName: tmos
+        body_format: json
+        timeout: 60
+        status_code: 200, 202
+        validate_certs: false
+      register: auth
+      delegate_to: localhost
+
+
+    - name: Get VS Details
+      uri:
+        url: "https://{{ inventory_hostname }}/mgmt/tm/ltm/virtual/~{{ partition }}~{{ vs }}"
+        method: GET
+        headers:
+          Content-Type: application/json
+          X-F5-Auth-Token: "{{auth.json.token.token}}"
+        status_code: 200
+        validate_certs: false
+      register: vs_result
+      until: "(vs_result.status == 200)"
+      delegate_to: localhost
+
+      
+    - set_fact: pool_ref={{ vs_result.json.poolReference.link|replace('localhost', inventory_hostname) }}
+    - name: Get Pool Details
+      uri:
+        url: "{{ pool_ref }}"
+        method: GET
+        headers:
+          Content-Type: application/json
+          X-F5-Auth-Token: "{{auth.json.token.token}}"
+        status_code: 200
+        validate_certs: false
+      register: pool_result
+      until: "(vs_result.status == 200)"
+      delegate_to: localhost
+
+
+    - name: Delete virtual server
+      bigip_virtual_server:
+        state: absent
+        partition: "{{ partition }}"
+        name: "{{ vs }}"
+      delegate_to: localhost
+
+
+    - name: Delete pool
+      bigip_pool:
+        state: absent
+        partition: "{{ partition }}"
+        name: "{{ pool_result.json.name }}"
+      delegate_to: localhost

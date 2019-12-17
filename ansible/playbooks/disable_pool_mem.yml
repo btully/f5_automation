@@ -1,0 +1,27 @@
+---
+  - name: Remove Big-IP Application Config
+    hosts: bigips
+    connection: local
+    gather_facts: false
+  
+    vars:
+      partition: Common
+      bigip_user: admin
+      bigip_pass: admin
+      pool: test_pool
+      member_ip: 1.1.1.2   # Must be node name
+      member_port: 80 
+      state: disabled
+  
+    environment: "{{ bigip_env }}"
+  
+    tasks:
+      - name: Disable Pool Member
+        bigip_pool_member:
+          pool: "{{ pool }}"
+          address: "{{ member_ip }}"
+          port: "{{ member_port }}"
+          state: "{{ state }}"
+          partition: "{{ partition }}"
+        delegate_to: localhost
+  

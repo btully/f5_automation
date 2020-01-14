@@ -1,0 +1,21 @@
+---
+  - name: Modify LTM Pool Member
+    hosts: "{{ cluster }}"
+    connection: local
+    gather_facts: false
+  
+    vars:
+      partition: Common
+  
+    environment: "{{ bigip_env }}"
+  
+    tasks:
+      - name: Set Pool Member to "{{ state }}"
+        bigip_pool_member:
+          pool: "{{ pool }}"
+          address: "{{ member_ip }}"
+          port: "{{ member_port }}"
+          state: "{{ state }}"
+          partition: "{{ partition }}"
+        delegate_to: localhost
+  

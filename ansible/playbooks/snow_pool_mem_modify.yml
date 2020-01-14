@@ -8,14 +8,29 @@
       partition: Common
   
     environment: "{{ bigip_env }}"
-  
+
     tasks:
-      - name: Set Pool Member to "{{ state }}"
-        bigip_pool_member:
-          pool: "{{ pool }}"
-          address: "{{ member_ip }}"
-          port: "{{ member_port }}"
-          state: "{{ state }}"
-          partition: "{{ partition }}"
+      - name : Get BIG-IP failover status
+        bigip_command:
+          provider: "{{ f5Provider }}"
+          commands:
+            - "tmsh show sys failover"
         delegate_to: localhost
+        register: failoverStatus
+      
+      - name: Executing on ACTIVE F5 LTM
+        block:
+          - name: The active LTMs management IP is....
+            debug: 
+              var: inventory_hostname
+
+          - name: Set Pool Member to "{{ state }}"
+            bigip_pool_member:
+              pool: "{{ pool }}"
+              address: "{{ member_ip }}"
+              port: "{{ member_port }}"
+              state: "{{ state }}"
+              partition: "{{ partition }}"
+            delegate_to: localhost
+        when: "'active' in failoverStatus['stdout'][0]"
   

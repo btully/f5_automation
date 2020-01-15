@@ -17,20 +17,36 @@
             - "tmsh show sys failover"
         delegate_to: localhost
         register: failoverStatus
-      
-      - name: Executing on ACTIVE F5 LTM
-        block:
-          - name: The active LTMs management IP is....
-            debug: 
-              var: inventory_hostname
 
-          - name: Set Pool Member to "{{ state }}"
-            bigip_pool_member:
-              pool: "{{ pool }}"
-              address: "{{ member_ip }}"
-              port: "{{ member_port }}"
-              state: "{{ state }}"
-              partition: "{{ partition }}"
-            delegate_to: localhost
-        when: "'active' in failoverStatus['stdout'][0]"
+      - block:
+        - name: "Check if Big-IP is active"
+          debug:
+            msg: "Big-IP is inactive, ending play"
+        - meta: end_play
+        when: "'standby' in failoverStatus['stdout'][0]"
+
+      - name: Set Pool Member to "{{ state }}"
+        bigip_pool_member:
+          pool: "{{ pool }}"
+          address: "{{ member_ip }}"
+          port: "{{ member_port }}"
+          state: "{{ state }}"
+          partition: "{{ partition }}"
+        delegate_to: localhost
+      
+      # - name: Executing on ACTIVE F5 LTM
+      #   block:
+      #     - name: The active LTMs management IP is....
+      #       debug: 
+      #         var: inventory_hostname
+
+      #     - name: Set Pool Member to "{{ state }}"
+      #       bigip_pool_member:
+      #         pool: "{{ pool }}"
+      #         address: "{{ member_ip }}"
+      #         port: "{{ member_port }}"
+      #         state: "{{ state }}"
+      #         partition: "{{ partition }}"
+      #       delegate_to: localhost
+      #   when: "'active' in failoverStatus['stdout'][0]"
   

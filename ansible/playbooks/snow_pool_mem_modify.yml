@@ -10,6 +10,7 @@
     environment: "{{ bigip_env }}"
 
     tasks:
+      ######## Big-IP State Check ##########
       - name : Get BIG-IP failover status
         bigip_command:
           provider: "{{ f5Provider }}"
@@ -19,11 +20,11 @@
         register: failoverStatus
 
       - block:
-        - name: "Check if Big-IP is active"
-          debug:
-            msg: "Big-IP is inactive, ending play"
+        - debug:
+            msg: "Big-IP is in Standby, ending play"
         - meta: end_play
         when: "'standby' in failoverStatus['stdout'][0]"
+      ######## End State Check ##########
 
       - name: Set Pool Member to "{{ state }}"
         bigip_pool_member:

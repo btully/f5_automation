@@ -1,0 +1,39 @@
+---
+  - name: Modify LTM Pool Member
+    hosts: "{{ cluster }}"
+    connection: local
+    gather_facts: false
+  
+    vars:
+      partition: Common
+  
+    environment: "{{ bigip_env }}"
+
+    tasks:
+      ######## Big-IP State Check ##########
+      - name : Get BIG-IP failover status
+        bigip_command:
+          commands:
+            - "tmsh show sys failover"
+        delegate_to: localhost
+        register: failoverStatus
+
+      - block:
+        - debug:
+            msg: "Big-IP is in Standby, ending play"
+        - meta: end_play
+        when: "'standby' in failoverStatus['stdout'][0]"
+      ######## End State Check ##########
+
+      - name: Set Pool Member to "{{ state }}"
+        bigip_pool_member:
+          pool: "{{ item.pool }}"
+          address: "{{ item.member_ip }}"
+          port: "{{ item.member_port }}"
+          state: "{{ item.state }}"
+          partition: "{{ partition }}"
+        loop: "{{ pool_member_ops }}"
+        delegate_to: localhost
+      
+ 
+  

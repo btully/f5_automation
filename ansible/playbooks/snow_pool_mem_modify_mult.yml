@@ -21,7 +21,7 @@
       - block:
         - debug:
             msg: "Big-IP is in Standby, ending play"
-        - meta: end_play
+        - meta: end_host
         when: "'standby' in failoverStatus['stdout'][0]"
       ######## End State Check ##########
 

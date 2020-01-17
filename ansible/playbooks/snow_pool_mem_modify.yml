@@ -13,7 +13,6 @@
       ######## Big-IP State Check ##########
       - name : Get BIG-IP failover status
         bigip_command:
-          provider: "{{ f5Provider }}"
           commands:
             - "tmsh show sys failover"
         delegate_to: localhost

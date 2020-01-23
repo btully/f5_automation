@@ -1,14 +1,11 @@
 ---
 - name: Remove Big-IP Application Config
-  hosts: bigips
+  hosts: "{{ cluster }}"
   connection: local
   gather_facts: false
 
   vars:
     partition: Common
-    vs: demo_vs
-    bigip_user: admin
-    bigip_pass: admin
 
   environment: "{{ bigip_env }}"
 

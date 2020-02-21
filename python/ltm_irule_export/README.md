@@ -2,16 +2,6 @@
 
 This outputs an LTM iRule coniguration opbject in JSON format 
 
-EXAMPLE OUTPUT:
-```
-==============================================================================
-Searching for pools and virtual servers that reference node IP - 10.1.20.1
-==============================================================================
-    
-Pool: /Common/example_pool
-     -> Virtual: /Common/vs_1
-     -> Virtual: /Common/vs_2
-```
 
 ### Prerequisites
 

@@ -61,13 +61,13 @@ usage: vs_report.py [-h] --host HOST --username USERNAME --vip VIP
 
 F5 Big-IQ Virtual Server Report Utility
 
-optional arguments:
+arguments:
   -h, --help           show this help message and exit
   --host HOST          BIG-IQ IP or Hostname
-  --username USERNAME  BIG-IP Username
+  --username USERNAME  BIQ-IQ Username
   --vip VIP            IP address and Port of the BigIP virtual server. Ex.
                        '10.1.10.200:443'
-  --password PASSWORD  BIG-IP Password (Optional. Otherwise getpass prompted)
+  --password PASSWORD  BIG-IQ Password (Optional. Otherwise getpass prompted)
 ```
 
 Enter password at prompt

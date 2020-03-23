@@ -10,9 +10,9 @@ requests.packages.urllib3.disable_warnings()
 # Get command line arguments 
 parser = argparse.ArgumentParser(description='F5 Big-IQ Virtual Server Report Utility')
 parser.add_argument('--host', help='BIG-IQ IP or Hostname', required=True)
-parser.add_argument('--username', help='BIG-IP Username', required=True)
+parser.add_argument('--username', help='BIQ-IQ Username', required=True)
 parser.add_argument('--vip', help='IP address and Port of the BigIP virtual server. Ex. \'10.1.10.200:443\'', required=True)
-parser.add_argument('--password', help='BIG-IP Password (Optional. Otherwise getpass prompted)')
+parser.add_argument('--password', help='BIG-IQ Password (Optional. Otherwise getpass prompted)')
 args = vars(parser.parse_args())
 
 BIGIQ_URL_BASE = 'https://%s/mgmt' % args['host']

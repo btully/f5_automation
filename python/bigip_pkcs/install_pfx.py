@@ -44,18 +44,6 @@ def _upload(host, creds, fp):
 
         start += current_bytes
 
-def _extract_ilx_file(host, creds, filename):
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    uri = 'https://%s/mgmt/tm/util/bash' % (host)
-    cmd = 'tar -xvzf /var/config/rest/downloads/%s --directory /var/ilx/workspaces/Common/' % filename
-    payload = {
-        "command": "run",
-        "utilCmdArgs": "-c \'%s\'" % cmd}
-
-    return requests.post(uri, auth=creds, data=json.dumps(payload), headers=headers, verify=False)
-
 def _extract_pfx_cert(host, creds, filename, password=''):
     headers = {
         'Content-Type': 'application/json'

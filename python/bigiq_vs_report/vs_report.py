@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description='F5 Big-IQ Virtual Server Report Ut
 parser.add_argument('--host', help='BIG-IQ IP or Hostname', required=True)
 parser.add_argument('--username', help='BIQ-IQ Username', required=True)
 parser.add_argument('--vip', help='IP address and Port of the BigIP virtual server. Ex. \'10.1.10.200:443\'', required=True)
+parser.add_argument('--auth-provider', help='BIG-IQ External Auth Provider name (Optional. Default is local auth: \"tmos\")', default='tmos')
 parser.add_argument('--password', help='BIG-IQ Password (Optional. Otherwise getpass prompted)')
 args = vars(parser.parse_args())
 
@@ -30,7 +31,11 @@ bigiq.verify = False
 bigiq.headers.update({'Content-Type' : 'application/json'})
 
 # Get Auth Token
-user_data = {'username': args['username'], 'password': password}
+user_data = {
+    'username': args['username'],
+    'password': password,
+    'loginProviderName': args['auth_provider']
+}
 try:
     response = bigiq.post('%s/shared/authn/login' % BIGIQ_URL_BASE, data=json.dumps(user_data))
     if response.status_code != 200:

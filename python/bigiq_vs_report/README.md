@@ -57,17 +57,17 @@ Git CLI Client (not required if downloading from Git website via browser)
 ```
 # python vs_report.py -h
 usage: vs_report.py [-h] --host HOST --username USERNAME --vip VIP
-                    [--password PASSWORD]
+                    [--auth-provider AUTH_PROVIDER] [--password PASSWORD]
 
 F5 Big-IQ Virtual Server Report Utility
 
 arguments:
-  -h, --help           show this help message and exit
-  --host HOST          BIG-IQ IP or Hostname
-  --username USERNAME  BIQ-IQ Username
-  --vip VIP            IP address and Port of the BigIP virtual server. Ex.
-                       '10.1.10.200:443'
-  --password PASSWORD  BIG-IQ Password (Optional. Otherwise getpass prompted)
+  -h, --help                    show this help message and exit
+  --host HOST                   BIG-IQ IP or Hostname
+  --username USERNAME           BIQ-IQ Username
+  --vip VIP                     IP address and Port of the BigIP virtual server. Ex. '10.1.10.200:443'
+  --auth-provider AUTH_PROVIDER BIG-IQ External Auth Provider name (Optional. Default is local auth: "tmos")
+  --password PASSWORD           BIG-IQ Password (Optional. Otherwise getpass prompted)
 ```
 
 Enter password at prompt

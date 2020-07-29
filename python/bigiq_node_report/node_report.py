@@ -54,15 +54,29 @@ report = {
     'devices': []
 }
 
-# Get Node Inventory from BIG-IQ
-node_list = bigiq.get('%s/cm/adc-core/working-config/ltm/node' % BIGIQ_URL_BASE).json()['items']
+# Initialize Inventory Lists
+node_list = []
+pool_list = []
+vs_list = []
 
-# Get Pool Inventory from BIG-IQ
-pool_list = bigiq.get('%s/cm/adc-core/working-config/ltm/pool' % BIGIQ_URL_BASE).json()['items']
+# Get Node Inventory from BIG-IQ.  Filter only on the specified node
+uri = '%s/cm/adc-core/working-config/ltm/node' % (BIGIQ_URL_BASE) + r"?$filter=address%20eq%20'" + "%s...%s\'" % (args['node'], args['node'])
+resp = bigiq.get(uri).json()
+if "items" in resp.keys():
+    node_list = resp['items']
 
-# Get Virtual Server Inventory from BIG-IQ
-vs_list = bigiq.get('%s/cm/adc-core/working-config/ltm/virtual' % BIGIQ_URL_BASE).json()['items']
+for node in node_list:
+    # Get Pool Inventory from BIG-IQ.  Iterate over each node's deviceReference ID to minimize search
+    uri = '%s/cm/adc-core/working-config/ltm/pool' % (BIGIQ_URL_BASE) + r"?$filter=deviceReference%2Fid%20eq%20'" + "%s\'" % (node['deviceReference']['id'])
+    resp = bigiq.get(uri).json()
+    if "items" in resp.keys():
+        pool_list.extend(resp['items'])
 
+    # Get Virtual Server Inventory from BIG-IQ.  Iterate over each node's deviceReference ID to minimize search
+    uri = '%s/cm/adc-core/working-config/ltm/virtual' % (BIGIQ_URL_BASE) + r"?$filter=deviceReference%2Fid%20eq%20'" + "%s\'" % (node['deviceReference']['id'])
+    resp = bigiq.get(uri).json()
+    if "items" in resp.keys():
+        vs_list.extend(resp['items'])
 
 # Check for node match
 for node in node_list:

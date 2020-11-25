@@ -40,7 +40,7 @@ optional arguments:
   --password PASSWORD  BIG-IP Password (Optional)
 ```
 
-Enter password at prompt
+Enter password at prompt if not supplied as CLI argument
 ```
 # User: admin, enter your password:
 ```
